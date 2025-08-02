@@ -8,7 +8,7 @@ import ast
 # Load Data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("final_movie_with_Sent_embedding_cleaned_16K.csv")
+    df = pd.read_csv("Movie_Recommender/final_movie_with_Sent_embedding_cleaned_16K.csv")
 
     # Parse plot_embedding from string to np.array
     #df["plot_embedding"] = df["plot_embedding"].apply(ast.literal_eval)
@@ -110,3 +110,4 @@ if st.button("Get Recommendations"):
     else:
         st.subheader(f"Top {top_k} movies similar to '{selected_movie}':")
         st.dataframe(results.reset_index(drop=True))
+
