@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 import ast
+import html
 
 # Load Data
 @st.cache_data
@@ -103,7 +104,7 @@ st.markdown("""
                         padding-top: 1.4rem !important;
                     }
                     button[data-baseweb="tab"] .st-emotion-cache-17r1dd6.e1fxfrsf0 p {
-                        font-size: 18px;
+                        font-size: 16px;
                     }
                 </style>""", unsafe_allow_html=True)
 st.title("🎬 Movie Recommender")
@@ -159,31 +160,32 @@ with tabs[0]:
                     if i + j < len(results):
                         with cols[j]:
                             with st.container():
-                        # Create columns: image (1/4 width), text (3/4 width)
                                 if j==0:
-                                    col1, col2,col3 = st.columns([0.5, 3,0.2])
+                                    col1, col2,col3 = st.columns([0.5, 3,0.1])
                                 else:
-                                    col3,col1, col2 = st.columns([0.2,0.5, 3])
+                                    col3,col1, col2 = st.columns([0.1,0.5, 3])
                                 with col1:
                                     st.image(results.iloc[i+j]["img_url"], width=100)
                                 with col2:
-                                    #st.markdown(f"<p style='font-size:24px; font-weight:bold;'>{results.iloc[i]['title']}\
-                                    #           <span style='padding-left: 32px;font-size: 20px'>{results.iloc[i]['year']}</span></p>",
-                                    #            unsafe_allow_html=True)
-                                    #st.write(results.iloc[i]['imdb_rating']+"          "+str(results.iloc[i]['metascore'])+"          "+str(results.iloc[i]['year']))
-                                    #the below code is used to display the title and year in a single line with the year at the end always
-                                    #col_title, col_year = st.columns([5, 1])
-                                    #with col_title:
-                                    #    st.markdown(f"<p style='font-size: 22px; font-weight: bold;'>{results.iloc[i]['title']}</p>", unsafe_allow_html=True)
-                                    #with col_year:
-                                    #    st.markdown(f"<p style='font-size: 16px; color: gray; text-align: right;'>{results.iloc[i]['year']}</p>", unsafe_allow_html=True)
-                                    #the below code is used to display the title and year in a single line with proper alignment
-                                    #st.markdown(f"""
-                                    #       <div style='display: flex; align-items: baseline; gap: 10px;'>
-                                    #          <span style='font-size: 22px; font-weight: bold;'>{results.iloc[i]['title']}</span>
-                                    #         <span style='font-size: 16px; color: gray;'>({results.iloc[i]['year']})</span>
-                                        #    </div>
-                                        #""", unsafe_allow_html=True)
+                                        #st.markdown(f"<p style='font-size:24px; font-weight:bold;'>{results.iloc[i]['title']}\
+                                        #           <span style='padding-left: 32px;font-size: 20px'>{results.iloc[i]['year']}</span></p>",
+                                        #            unsafe_allow_html=True)
+                                        #st.write(results.iloc[i]['imdb_rating']+"          "+str(results.iloc[i]['metascore'])+"          "+str(results.iloc[i]['year']))
+                                        #the below code is used to display the title and year in a single line with the year at the end always
+                                        #col_title, col_year = st.columns([5, 1])
+                                        #with col_title:
+                                        #    st.markdown(f"<p style='font-size: 22px; font-weight: bold;'>{results.iloc[i]['title']}</p>", unsafe_allow_html=True)
+                                        #with col_year:
+                                        #    st.markdown(f"<p style='font-size: 16px; color: gray; text-align: right;'>{results.iloc[i]['year']}</p>", unsafe_allow_html=True)
+                                        #the below code is used to display the title and year in a single line with proper alignment
+                                        #st.markdown(f"""
+                                        #       <div style='display: flex; align-items: baseline; gap: 10px;'>
+                                        #          <span style='font-size: 22px; font-weight: bold;'>{results.iloc[i]['title']}</span>
+                                        #         <span style='font-size: 16px; color: gray;'>({results.iloc[i]['year']})</span>
+                                            #    </div>
+                                            #""", unsafe_allow_html=True)
+                                    title_text = results.iloc[i+j]['title']
+                                    title_text=html.escape(title_text) 
                                     st.markdown(
                                             f"""
                                             <div style="
@@ -192,7 +194,7 @@ with tabs[0]:
                                                 justify-content: space-between;
                                                 gap: 10px;
                                             ">
-                                                <div title="{results.iloc[i+j]['title']}"
+                                                <div title="{title_text}"
                                                 style="
                                                     font-size: 22px;
                                                     font-weight: bold;
@@ -201,7 +203,7 @@ with tabs[0]:
                                                     text-overflow: ellipsis;
                                                     flex-grow: 1;
                                                 ">
-                                                    {results.iloc[i+j]['title']}
+                                                    {title_text}
                                                 </div>
                                                 <div style="
                                                     font-size: 16px;
@@ -215,13 +217,18 @@ with tabs[0]:
                                             """,
                                             unsafe_allow_html=True
                                         )
-                                    coli1, coli2, coli3 = st.columns([2, 1.2, 1.5])
-                                    coli1.write(f"**{results.iloc[i+j]['genre']}**")
-                                    coli2.write(f"IMDb Rating: {results.iloc[i+j]['imdb_rating']} ⭐")
-                                    coli3.write(f"Metascore: {results.iloc[i+j]['metascore']}")
+                                    coli1, coli2, coli3 = st.columns([2.3, 1.2, 1.5])
+                                    with coli1:
+                                        st.markdown(f"<p style='font-size:14px;font-weight:400'>{results.iloc[i+j]['genre']}</p>", unsafe_allow_html=True)
+                                    with coli2:
+                                        st.markdown(f"<p style='font-size:14px;font-weight:400'>IMDb Rating: {results.iloc[i+j]['imdb_rating']} ⭐</p>", unsafe_allow_html=True)
+                                    with coli3:
+                                        st.markdown(f"<p style='font-size:14px;font-weight:400'>Metascore: {results.iloc[i+j]['metascore']}</p>", unsafe_allow_html=True)
+                                    plot_text = results.iloc[i+j]['plot']
+                                    escaped_plot = html.escape(plot_text) 
                                     st.markdown(
                                         f"""
-                                        <p title='{results.iloc[i+j]['plot']}'
+                                        <p title='{escaped_plot}'
                                         style='
                                             display: -webkit-box;
                                             -webkit-line-clamp: 2;
@@ -232,7 +239,7 @@ with tabs[0]:
                                             line-height: 1.5em;
                                             max-height: 3em;
                                         '>
-                                            {results.iloc[i+j]['plot']}
+                                            {escaped_plot}
                                         </p>
                                         """,
                                         unsafe_allow_html=True
@@ -306,12 +313,14 @@ with tabs[1]:
                     with cols[j]:
                         with st.container():
                             if j==0:
-                                col1, col2,col3 = st.columns([0.5, 3,0.2])
+                                col1, col2,col3 = st.columns([0.5, 3,0.1])
                             else:
-                                col3,col1, col2 = st.columns([0.2,0.5, 3])
+                                col3,col1, col2 = st.columns([0.1,0.5, 3])
                             with col1:
                                 st.image(results.iloc[i+j]["img_url"], width=100)
                             with col2:
+                                title_text = results.iloc[i+j]['title']
+                                title_text=html.escape(title_text) 
                                 st.markdown(
                                         f"""
                                         <div style="
@@ -320,7 +329,7 @@ with tabs[1]:
                                             justify-content: space-between;
                                             gap: 10px;
                                         ">
-                                            <div title="{results.iloc[i+j]['title']}"
+                                            <div title="{title_text}"
                                             style="
                                                 font-size: 22px;
                                                 font-weight: bold;
@@ -329,7 +338,7 @@ with tabs[1]:
                                                 text-overflow: ellipsis;
                                                 flex-grow: 1;
                                             ">
-                                                {results.iloc[i+j]['title']}
+                                                {title_text}
                                             </div>
                                             <div style="
                                                 font-size: 16px;
@@ -343,13 +352,18 @@ with tabs[1]:
                                         """,
                                         unsafe_allow_html=True
                                     )
-                                coli1, coli2, coli3 = st.columns([2, 1.2, 1.5])
-                                coli1.write(f"**{results.iloc[i+j]['genre']}**")
-                                coli2.write(f"IMDb Rating: {results.iloc[i+j]['imdb_rating']} ⭐")
-                                coli3.write(f"Metascore: {results.iloc[i+j]['metascore']}")
+                                coli1, coli2, coli3 = st.columns([2.3, 1.2, 1.5])
+                                with coli1:
+                                    st.markdown(f"<p style='font-size:14px;font-weight:400'>{results.iloc[i+j]['genre']}</p>", unsafe_allow_html=True)
+                                with coli2:
+                                    st.markdown(f"<p style='font-size:14px;font-weight:400'>IMDb Rating: {results.iloc[i+j]['imdb_rating']} ⭐</p>", unsafe_allow_html=True)
+                                with coli3:
+                                    st.markdown(f"<p style='font-size:14px;font-weight:400'>Metascore: {results.iloc[i+j]['metascore']}</p>", unsafe_allow_html=True)
+                                plot_text = results.iloc[i+j]['plot']
+                                escaped_plot = html.escape(plot_text) 
                                 st.markdown(
                                     f"""
-                                    <p title='{results.iloc[i+j]['plot']}'
+                                    <p title='{escaped_plot}'
                                     style='
                                         display: -webkit-box;
                                         -webkit-line-clamp: 2;
@@ -360,7 +374,7 @@ with tabs[1]:
                                         line-height: 1.5em;
                                         max-height: 3em;
                                     '>
-                                        {results.iloc[i+j]['plot']}
+                                        {escaped_plot}
                                     </p>
                                     """,
                                     unsafe_allow_html=True
@@ -398,7 +412,7 @@ with tabs[2]:
                 <style>
                     .stButton.st-emotion-cache-8atqhb.e1mlolmg0 {
                         margin-top: -5.45rem;
-                        margin-left: -34rem;
+                        margin-left: -26rem;
                     }
                 </style>""", unsafe_allow_html=True)
         sel3, sel2  = st.columns([5, 2])
@@ -407,7 +421,7 @@ with tabs[2]:
                 <style>
                     .stButton.st-emotion-cache-8atqhb.e1mlolmg0 {
                         margin-top: -4.5rem;
-                        margin-left: -34rem;
+                        margin-left: -26rem;
                     }
                 </style>""", unsafe_allow_html=True)
         sel3, sel2 = st.columns([5, 2])
@@ -450,12 +464,14 @@ with tabs[2]:
                     with cols[j]:
                         with st.container():
                             if j==0:
-                                col1, col2,col3 = st.columns([0.5, 3,0.2])
+                                col1, col2,col3 = st.columns([0.5, 3,0.1])
                             else:
-                                col3,col1, col2 = st.columns([0.2,0.5, 3])
+                                col3,col1, col2 = st.columns([0.1,0.5, 3])
                             with col1:
                                 st.image(results.iloc[i+j]["img_url"], width=100)
                             with col2:
+                                title_text = results.iloc[i+j]['title']
+                                title_text=html.escape(title_text) 
                                 st.markdown(
                                         f"""
                                         <div style="
@@ -464,7 +480,7 @@ with tabs[2]:
                                             justify-content: space-between;
                                             gap: 10px;
                                         ">
-                                            <div title="{results.iloc[i+j]['title']}"
+                                            <div title="{title_text}"
                                             style="
                                                 font-size: 22px;
                                                 font-weight: bold;
@@ -473,7 +489,7 @@ with tabs[2]:
                                                 text-overflow: ellipsis;
                                                 flex-grow: 1;
                                             ">
-                                                {results.iloc[i+j]['title']}
+                                                {title_text}
                                             </div>
                                             <div style="
                                                 font-size: 16px;
@@ -487,13 +503,18 @@ with tabs[2]:
                                         """,
                                         unsafe_allow_html=True
                                     )
-                                coli1, coli2, coli3 = st.columns([2, 1.2, 1.5])
-                                coli1.write(f"**{results.iloc[i+j]['genre']}**")
-                                coli2.write(f"IMDb Rating: {results.iloc[i+j]['imdb_rating']} ⭐")
-                                coli3.write(f"Metascore: {results.iloc[i+j]['metascore']}")
+                                coli1, coli2, coli3 = st.columns([2.3, 1.2, 1.5])
+                                with coli1:
+                                    st.markdown(f"<p style='font-size:14px;font-weight:400'>{results.iloc[i+j]['genre']}</p>", unsafe_allow_html=True)
+                                with coli2:
+                                    st.markdown(f"<p style='font-size:14px;font-weight:400'>IMDb Rating: {results.iloc[i+j]['imdb_rating']} ⭐</p>", unsafe_allow_html=True)
+                                with coli3:
+                                    st.markdown(f"<p style='font-size:14px;font-weight:400'>Metascore: {results.iloc[i+j]['metascore']}</p>", unsafe_allow_html=True)
+                                plot_text = results.iloc[i+j]['plot']
+                                escaped_plot = html.escape(plot_text) 
                                 st.markdown(
                                     f"""
-                                    <p title='{results.iloc[i+j]['plot']}'
+                                    <p title='{escaped_plot}'
                                     style='
                                         display: -webkit-box;
                                         -webkit-line-clamp: 2;
@@ -504,7 +525,7 @@ with tabs[2]:
                                         line-height: 1.5em;
                                         max-height: 3em;
                                     '>
-                                        {results.iloc[i+j]['plot']}
+                                        {escaped_plot}
                                     </p>
                                     """,
                                     unsafe_allow_html=True
